@@ -84,7 +84,7 @@ curl http://localhost:42617/a2a/my_merchant_agent/.well-known/agent-card.json
 
 ## **4. Running a Skill From an Agent**
 
-This is the current in-progress Microsoft PowerShell command for calling the `search_catalog` skill through A2A.
+Assuming that zeroclaw gateway is currently activated, this is the current in-progress Microsoft PowerShell command for calling the `search_catalog` skill through A2A.
 
 ```powershell
 $body = @{
