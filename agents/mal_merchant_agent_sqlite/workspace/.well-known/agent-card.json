@@ -1,0 +1,74 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "mal_merchant_agent_sqlite",
+  "description": "A2A-compatible merchant agent with SQLite-backed catalog search and product retrieval utilities.",
+  "url": "http://localhost:42617/a2a/mal_merchant_agent_sqlite",
+  "version": "1.0.0",
+  "provider": {
+    "organization": "ZeroClaw Merchant Sandbox",
+    "url": "http://localhost:42617/a2a/mal_merchant_agent_sqlite"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "preferredTransport": "JSONRPC",
+  "additionalInterfaces": [
+    {
+      "url": "http://localhost:42617/a2a/mal_merchant_agent_sqlite",
+      "transport": "JSONRPC"
+    }
+  ],
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "search_catalog",
+      "name": "Search Catalog",
+      "description": "Search the SQLite-backed merchant catalog and return UCP-shaped catalog search results.",
+      "tags": [
+        "ucp_merchant_skills_sqlite",
+        "commerce",
+        "catalog",
+        "product-search",
+        "ucp-compatible",
+        "sqlite"
+      ],
+      "examples": [
+        "Find wireless headphones",
+        "Search for computer accessories",
+        "Show all available products"
+      ],
+      "inputModes": ["text"],
+      "outputModes": ["text"]
+    },
+    {
+      "id": "retrieve_product_info",
+      "name": "Retrieve Product Info",
+      "description": "Retrieve full UCP-shaped product detail for a product or variant identifier from the SQLite-backed merchant catalog.",
+      "tags": [
+        "ucp_merchant_skills_sqlite",
+        "commerce",
+        "catalog",
+        "product-details",
+        "ucp-compatible",
+        "sqlite"
+      ],
+      "examples": [
+        "Get product prod_mal_speaker_001",
+        "Get variant var_mal_charger_001_white",
+        "Return full details for prod_mal_stand_001"
+      ],
+      "inputModes": ["text"],
+      "outputModes": ["text"]
+    }
+  ],
+  "supportsAuthenticatedExtendedCard": false
+}

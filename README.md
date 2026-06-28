@@ -2,6 +2,8 @@
 
 This guide explains how to set up a dummy UCP-style merchant agent in ZeroClaw, expose it through A2A, and test the agent card and skill execution from the terminal.
 
+Note: the 'sqlite' agents and skills rely on Python which is not allowed on an agent with the 'locked-down' risk profile, presumably unless there's a portable Python install in the agent's workspace.
+
 ---
 
 ## **1. Copy the Repo Contents**
@@ -128,13 +130,22 @@ These skills are intended to return UCP-shaped catalog responses, but the agent 
 
 For full UCP compliance, a separate UCP discovery/profile endpoint would likely still be needed.
 
-## **6. Creating new agents**
+## **6. Creating new agents and skill bundles**
+
 You can create a new agent by asking your agent to do the following:
+
 ```text
 Create a new agent based on my_merchant_agent. This means we should copy the structure and files of my_merchant_agent into a new directory under /agents. Make sure to adapt the .well-known/agent-card.json with the correct agent name. The name of the new agent should be {put name here}. This agent should {put other details here}.
 ```
-You can create new skill bundle by asking your agent to do the following:
+
+You can create a new skill bundle by asking your agent to do the following:
+
 ```text
 Create a new skill bundle based on ucp_merchant_skills. This means we should copy the structure and files of ucp_merchant_skills into a new directory under /shared/skills. The name of the new bundle should be {put name here}. This bundle should {put other details here}.
+
+Any additional utilities should be added into the agent's workspace, and the skill will check for the utility in the agent's workspace.
 ```
-Make sure to update your config.toml file under .zeroclaw folder to register the new skill bundle and/or agent.
+
+Skills are run as if they are already situated in the agent's workspace directory. If a skill calls an agent utility, document the command with workspace-relative paths, for example:
+
+Make sure to update your config.toml file under the `.zeroclaw` folder to register the new skill bundle and/or agent.
