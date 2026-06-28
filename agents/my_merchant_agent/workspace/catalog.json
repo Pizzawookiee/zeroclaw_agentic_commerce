@@ -1,0 +1,657 @@
+{
+  "merchant": {
+    "merchant_id": "demo_merchant",
+    "display_name": "Demo Merchant",
+    "default_currency": "USD"
+  },
+  "schema_notes": {
+    "purpose": "Local dummy catalog fixture for A2A/ZeroClaw UCP-shaped search_catalog and retrieve_product_info skills.",
+    "url_policy": "This fixture intentionally does not include product_url, image_url, policy_url, or other newly invented URLs because those endpoints are not actually served.",
+    "price_policy": "All prices use minor currency units, e.g. cents for USD."
+  },
+  "products": [
+    {
+      "id": "prod_headphones_001",
+      "title": "Nimbus Wireless Headphones",
+      "description": "Lightweight wireless over-ear headphones with active noise cancellation and long battery life.",
+      "media": [],
+      "categories": [
+        {
+          "value": "electronics/audio/headphones",
+          "label": "Headphones"
+        },
+        {
+          "value": "electronics/audio",
+          "label": "Audio"
+        }
+      ],
+      "tags": [
+        "headphones",
+        "wireless",
+        "bluetooth",
+        "noise-cancelling",
+        "audio",
+        "over-ear"
+      ],
+      "attributes": {
+        "brand": "Nimbus Audio",
+        "color_family": "black",
+        "connectivity": "bluetooth",
+        "noise_cancellation": true,
+        "battery_life_hours": 32,
+        "form_factor": "over_ear"
+      },
+      "options": [
+        {
+          "name": "Color",
+          "values": [
+            {
+              "value": "Black",
+              "available": true,
+              "exists": true
+            },
+            {
+              "value": "Silver",
+              "available": false,
+              "exists": true
+            }
+          ]
+        }
+      ],
+      "featured_variant_id": "var_headphones_001_black",
+      "variants": [
+        {
+          "id": "var_headphones_001_black",
+          "sku": "NIM-HDP-001-BLK",
+          "title": "Black",
+          "price": {
+            "amount": 8999,
+            "currency": "USD"
+          },
+          "compare_at_price": {
+            "amount": 11999,
+            "currency": "USD"
+          },
+          "availability": {
+            "status": "in_stock",
+            "quantity": 42
+          },
+          "selected_options": [
+            {
+              "name": "Color",
+              "value": "Black"
+            }
+          ],
+          "dimensions": {
+            "weight_grams": 280,
+            "length_mm": 190,
+            "width_mm": 170,
+            "height_mm": 80
+          },
+          "limits": {
+            "min_quantity": 1,
+            "max_quantity": 5
+          }
+        },
+        {
+          "id": "var_headphones_001_silver",
+          "sku": "NIM-HDP-001-SLV",
+          "title": "Silver",
+          "price": {
+            "amount": 8999,
+            "currency": "USD"
+          },
+          "compare_at_price": {
+            "amount": 11999,
+            "currency": "USD"
+          },
+          "availability": {
+            "status": "out_of_stock",
+            "quantity": 0
+          },
+          "selected_options": [
+            {
+              "name": "Color",
+              "value": "Silver"
+            }
+          ],
+          "dimensions": {
+            "weight_grams": 280,
+            "length_mm": 190,
+            "width_mm": 170,
+            "height_mm": 80
+          },
+          "limits": {
+            "min_quantity": 1,
+            "max_quantity": 5
+          }
+        }
+      ],
+      "rating": {
+        "average": 4.5,
+        "count": 128
+      },
+      "policies": {
+        "return_policy": {
+          "returnable": true,
+          "window_days": 30,
+          "summary": "Returns accepted within 30 days if the item is unused and in original packaging.",
+          "policy_url": null
+        },
+        "warranty": {
+          "included": true,
+          "duration_days": 365,
+          "summary": "One-year limited manufacturer warranty.",
+          "policy_url": null
+        },
+        "age_restriction": {
+          "required": false,
+          "minimum_age": null
+        }
+      },
+      "fulfillment": {
+        "ships_to": [
+          "US"
+        ],
+        "shipping_required": true,
+        "pickup_available": false,
+        "estimated_handling_days": {
+          "min": 1,
+          "max": 2
+        },
+        "shipping_notes": "Standard and expedited shipping can be calculated at checkout."
+      },
+      "trust_evidence": {
+        "merchant_assertions": [
+          {
+            "type": "authenticity",
+            "claim": "Sold directly by Demo Merchant as a new retail product.",
+            "evidence_url": null,
+            "verified_by": null
+          }
+        ]
+      }
+    },
+    {
+      "id": "prod_earbuds_001",
+      "title": "PocketBeat Wireless Earbuds",
+      "description": "Compact true wireless earbuds with charging case, touch controls, and water resistance.",
+      "media": [],
+      "categories": [
+        {
+          "value": "electronics/audio/earbuds",
+          "label": "Earbuds"
+        },
+        {
+          "value": "electronics/audio",
+          "label": "Audio"
+        }
+      ],
+      "tags": [
+        "earbuds",
+        "wireless",
+        "bluetooth",
+        "audio",
+        "water-resistant",
+        "portable"
+      ],
+      "attributes": {
+        "brand": "PocketBeat",
+        "color_family": "white",
+        "connectivity": "bluetooth",
+        "water_resistant": true,
+        "battery_life_hours": 24,
+        "form_factor": "in_ear"
+      },
+      "options": [
+        {
+          "name": "Color",
+          "values": [
+            {
+              "value": "White",
+              "available": true,
+              "exists": true
+            }
+          ]
+        }
+      ],
+      "featured_variant_id": "var_earbuds_001_white",
+      "variants": [
+        {
+          "id": "var_earbuds_001_white",
+          "sku": "PKB-EBD-001-WHT",
+          "title": "White",
+          "price": {
+            "amount": 4999,
+            "currency": "USD"
+          },
+          "compare_at_price": null,
+          "availability": {
+            "status": "in_stock",
+            "quantity": 65
+          },
+          "selected_options": [
+            {
+              "name": "Color",
+              "value": "White"
+            }
+          ],
+          "dimensions": {
+            "weight_grams": 55,
+            "length_mm": 70,
+            "width_mm": 45,
+            "height_mm": 30
+          },
+          "limits": {
+            "min_quantity": 1,
+            "max_quantity": 10
+          }
+        }
+      ],
+      "rating": {
+        "average": 4.2,
+        "count": 84
+      },
+      "policies": {
+        "return_policy": {
+          "returnable": true,
+          "window_days": 30,
+          "summary": "Returns accepted within 30 days if the item is unused and in original packaging.",
+          "policy_url": null
+        },
+        "warranty": {
+          "included": true,
+          "duration_days": 180,
+          "summary": "Six-month limited manufacturer warranty.",
+          "policy_url": null
+        },
+        "age_restriction": {
+          "required": false,
+          "minimum_age": null
+        }
+      },
+      "fulfillment": {
+        "ships_to": [
+          "US"
+        ],
+        "shipping_required": true,
+        "pickup_available": false,
+        "estimated_handling_days": {
+          "min": 1,
+          "max": 2
+        },
+        "shipping_notes": "Standard shipping can be calculated at checkout."
+      },
+      "trust_evidence": {
+        "merchant_assertions": []
+      }
+    },
+    {
+      "id": "prod_keyboard_001",
+      "title": "TypePro Mechanical Keyboard",
+      "description": "Compact mechanical keyboard with hot-swappable switches, RGB backlighting, and USB-C connectivity.",
+      "media": [],
+      "categories": [
+        {
+          "value": "electronics/computer-accessories/keyboards",
+          "label": "Keyboards"
+        },
+        {
+          "value": "electronics/computer-accessories",
+          "label": "Computer Accessories"
+        }
+      ],
+      "tags": [
+        "keyboard",
+        "mechanical",
+        "computer",
+        "accessory",
+        "rgb",
+        "usb-c"
+      ],
+      "attributes": {
+        "brand": "TypePro",
+        "layout": "75%",
+        "switch_type": "linear",
+        "connectivity": "usb-c",
+        "backlight": true
+      },
+      "options": [
+        {
+          "name": "Color",
+          "values": [
+            {
+              "value": "Black",
+              "available": true,
+              "exists": true
+            }
+          ]
+        },
+        {
+          "name": "Switch Type",
+          "values": [
+            {
+              "value": "Linear",
+              "available": true,
+              "exists": true
+            }
+          ]
+        }
+      ],
+      "featured_variant_id": "var_keyboard_001_black_linear",
+      "variants": [
+        {
+          "id": "var_keyboard_001_black_linear",
+          "sku": "TYP-KBD-001-BLK-LIN",
+          "title": "Black / Linear Switches",
+          "price": {
+            "amount": 7999,
+            "currency": "USD"
+          },
+          "compare_at_price": null,
+          "availability": {
+            "status": "in_stock",
+            "quantity": 18
+          },
+          "selected_options": [
+            {
+              "name": "Color",
+              "value": "Black"
+            },
+            {
+              "name": "Switch Type",
+              "value": "Linear"
+            }
+          ],
+          "dimensions": {
+            "weight_grams": 720,
+            "length_mm": 330,
+            "width_mm": 140,
+            "height_mm": 40
+          },
+          "limits": {
+            "min_quantity": 1,
+            "max_quantity": 3
+          }
+        }
+      ],
+      "rating": {
+        "average": 4.7,
+        "count": 211
+      },
+      "policies": {
+        "return_policy": {
+          "returnable": true,
+          "window_days": 30,
+          "summary": "Returns accepted within 30 days if the item is unused and in original packaging.",
+          "policy_url": null
+        },
+        "warranty": {
+          "included": true,
+          "duration_days": 365,
+          "summary": "One-year limited manufacturer warranty.",
+          "policy_url": null
+        },
+        "age_restriction": {
+          "required": false,
+          "minimum_age": null
+        }
+      },
+      "fulfillment": {
+        "ships_to": [
+          "US"
+        ],
+        "shipping_required": true,
+        "pickup_available": false,
+        "estimated_handling_days": {
+          "min": 2,
+          "max": 3
+        },
+        "shipping_notes": "Ships in protective retail packaging."
+      },
+      "trust_evidence": {
+        "merchant_assertions": []
+      }
+    },
+    {
+      "id": "prod_mouse_001",
+      "title": "GlidePoint Wireless Mouse",
+      "description": "Ergonomic wireless mouse with adjustable DPI, silent clicks, and USB receiver.",
+      "media": [],
+      "categories": [
+        {
+          "value": "electronics/computer-accessories/mice",
+          "label": "Mice"
+        },
+        {
+          "value": "electronics/computer-accessories",
+          "label": "Computer Accessories"
+        }
+      ],
+      "tags": [
+        "mouse",
+        "wireless",
+        "computer",
+        "accessory",
+        "ergonomic",
+        "silent"
+      ],
+      "attributes": {
+        "brand": "GlidePoint",
+        "color_family": "black",
+        "connectivity": "wireless_usb",
+        "dpi": 3200,
+        "silent_clicks": true
+      },
+      "options": [
+        {
+          "name": "Color",
+          "values": [
+            {
+              "value": "Black",
+              "available": true,
+              "exists": true
+            }
+          ]
+        }
+      ],
+      "featured_variant_id": "var_mouse_001_black",
+      "variants": [
+        {
+          "id": "var_mouse_001_black",
+          "sku": "GLD-MSE-001-BLK",
+          "title": "Black",
+          "price": {
+            "amount": 2499,
+            "currency": "USD"
+          },
+          "compare_at_price": null,
+          "availability": {
+            "status": "in_stock",
+            "quantity": 103
+          },
+          "selected_options": [
+            {
+              "name": "Color",
+              "value": "Black"
+            }
+          ],
+          "dimensions": {
+            "weight_grams": 95,
+            "length_mm": 115,
+            "width_mm": 65,
+            "height_mm": 40
+          },
+          "limits": {
+            "min_quantity": 1,
+            "max_quantity": 10
+          }
+        }
+      ],
+      "rating": {
+        "average": 4.3,
+        "count": 97
+      },
+      "policies": {
+        "return_policy": {
+          "returnable": true,
+          "window_days": 30,
+          "summary": "Returns accepted within 30 days if the item is unused and in original packaging.",
+          "policy_url": null
+        },
+        "warranty": {
+          "included": true,
+          "duration_days": 365,
+          "summary": "One-year limited manufacturer warranty.",
+          "policy_url": null
+        },
+        "age_restriction": {
+          "required": false,
+          "minimum_age": null
+        }
+      },
+      "fulfillment": {
+        "ships_to": [
+          "US"
+        ],
+        "shipping_required": true,
+        "pickup_available": false,
+        "estimated_handling_days": {
+          "min": 1,
+          "max": 2
+        },
+        "shipping_notes": "Standard shipping can be calculated at checkout."
+      },
+      "trust_evidence": {
+        "merchant_assertions": []
+      }
+    },
+    {
+      "id": "prod_mug_001",
+      "title": "Everyday Ceramic Coffee Mug",
+      "description": "Durable ceramic coffee mug with a comfortable handle and dishwasher-safe finish.",
+      "media": [],
+      "categories": [
+        {
+          "value": "home/kitchen/drinkware",
+          "label": "Drinkware"
+        },
+        {
+          "value": "home/kitchen",
+          "label": "Kitchen"
+        }
+      ],
+      "tags": [
+        "mug",
+        "coffee",
+        "kitchen",
+        "ceramic",
+        "drinkware",
+        "dishwasher-safe"
+      ],
+      "attributes": {
+        "brand": "HomeBase",
+        "color_family": "blue",
+        "material": "ceramic",
+        "capacity_oz": 14,
+        "dishwasher_safe": true
+      },
+      "options": [
+        {
+          "name": "Color",
+          "values": [
+            {
+              "value": "Blue",
+              "available": true,
+              "exists": true
+            }
+          ]
+        },
+        {
+          "name": "Size",
+          "values": [
+            {
+              "value": "14 oz",
+              "available": true,
+              "exists": true
+            }
+          ]
+        }
+      ],
+      "featured_variant_id": "var_mug_001_blue_14oz",
+      "variants": [
+        {
+          "id": "var_mug_001_blue_14oz",
+          "sku": "HMB-MUG-001-BLU-14",
+          "title": "Blue / 14 oz",
+          "price": {
+            "amount": 1299,
+            "currency": "USD"
+          },
+          "compare_at_price": null,
+          "availability": {
+            "status": "in_stock",
+            "quantity": 140
+          },
+          "selected_options": [
+            {
+              "name": "Color",
+              "value": "Blue"
+            },
+            {
+              "name": "Size",
+              "value": "14 oz"
+            }
+          ],
+          "dimensions": {
+            "weight_grams": 360,
+            "length_mm": 120,
+            "width_mm": 90,
+            "height_mm": 100
+          },
+          "limits": {
+            "min_quantity": 1,
+            "max_quantity": 20
+          }
+        }
+      ],
+      "rating": {
+        "average": 4.1,
+        "count": 52
+      },
+      "policies": {
+        "return_policy": {
+          "returnable": true,
+          "window_days": 30,
+          "summary": "Returns accepted within 30 days if the item is unused and in original packaging.",
+          "policy_url": null
+        },
+        "warranty": {
+          "included": false,
+          "duration_days": null,
+          "summary": null,
+          "policy_url": null
+        },
+        "age_restriction": {
+          "required": false,
+          "minimum_age": null
+        }
+      },
+      "fulfillment": {
+        "ships_to": [
+          "US"
+        ],
+        "shipping_required": true,
+        "pickup_available": false,
+        "estimated_handling_days": {
+          "min": 1,
+          "max": 2
+        },
+        "shipping_notes": "Fragile item; packed with protective material."
+      },
+      "trust_evidence": {
+        "merchant_assertions": []
+      }
+    }
+  ]
+}

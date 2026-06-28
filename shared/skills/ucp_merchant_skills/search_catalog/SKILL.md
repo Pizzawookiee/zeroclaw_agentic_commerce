@@ -1,189 +1,245 @@
 ---
 id: search_catalog
 name: Search Catalog
-description: Search the merchant catalog and return matching products in a strict JSON schema.
+description: Search the merchant catalog and return UCP-shaped catalog search results.
 tags:
+  - ucp_merchant_skills
   - commerce
   - catalog
   - product-search
   - ucp-compatible
 inputModes:
-  - application/json
+  - text
 outputModes:
-  - application/json
+  - text
 ---
 
 # Search Catalog
 
 ## Purpose
 
-Use this skill when a buyer agent, auditor agent, or shopping client asks to search the merchant's catalog for products matching a query, category, price range, attributes, availability, or other filters.
+Use this skill when the caller wants to search or browse the merchant catalog.
 
-This skill must return structured JSON only. Do not return prose, Markdown, explanations, or extra keys outside the schema.
+This skill maps to the UCP Catalog Search capability:
+
+`dev.ucp.shopping.catalog.search`
+
+Return only valid JSON. Do not return Markdown, prose, code fences, explanations, or extra text.
 
 ## Input
 
-The caller should provide JSON matching this shape:
+The caller may provide a natural language query, such as:
+
+```text
+Query: headphones
+```
+
+The caller may also provide JSON-like search details in text:
 
 ```json
 {
-  "query": "string",
+  "query": "headphones",
   "filters": {
-    "category": "string | null",
-    "min_price": "number | null",
-    "max_price": "number | null",
-    "currency": "string | null",
-    "availability": "in_stock | out_of_stock | preorder | any | null",
-    "brand": "string | null",
-    "attributes": {
-      "string": "string | number | boolean"
+    "category": "electronics/audio/headphones",
+    "price": {
+      "min": {
+        "amount": 0,
+        "currency": "USD"
+      },
+      "max": {
+        "amount": 10000,
+        "currency": "USD"
+      }
     }
   },
-  "sort": "relevance | price_asc | price_desc | newest | rating | null",
-  "limit": "number | null",
-  "cursor": "string | null"
+  "pagination": {
+    "cursor": null,
+    "limit": 10
+  }
 }
 ```
 
-If optional input fields are missing, treat them as `null`.
+If the user provides only natural language, infer a simple `query` string.
 
 ## Required Behavior
 
-1. Search only the merchant's real catalog or the provided demo catalog.
+1. Search only the local merchant catalog or approved merchant data source.
 2. Do not invent products.
-3. Do not invent prices, ratings, inventory, shipping claims, certifications, discounts, or availability.
-4. If a field is unknown, use `null`.
-5. If no products match, return an empty `items` array.
-6. Always return valid JSON matching the output schema exactly.
-7. Use stable merchant product IDs that can be passed to `get_product_details`.
-8. Return prices as integer minor units, for example cents for USD.
-9. Include enough structured evidence for an auditor to understand why each product matched.
+3. Do not invent prices, inventory, variants, ratings, certifications, discounts, or shipping claims.
+4. Return product and variant IDs exactly as stored in the catalog.
+5. Prices must use minor currency units, for example cents for USD.
+6. Catalog search is not a transactional commitment. Checkout must revalidate price and availability.
+7. If no products match, return an empty `products` array.
+8. Return only JSON in the response shape below.
 
-## Output Schema
+## UCP-Shaped Output
 
-Return exactly this JSON shape:
+Return exactly this top-level shape:
 
 ```json
 {
-  "schema_version": "merchant.catalog.search.v1",
-  "merchant": {
-    "merchant_id": "string",
-    "display_name": "string"
+  "ucp": {
+    "version": "2026-04-08",
+    "capability": "dev.ucp.shopping.catalog.search"
   },
-  "query": {
-    "raw": "string",
-    "normalized": "string",
-    "filters_applied": {
-      "category": "string | null",
-      "min_price": "number | null",
-      "max_price": "number | null",
-      "currency": "string | null",
-      "availability": "in_stock | out_of_stock | preorder | any | null",
-      "brand": "string | null",
-      "attributes": {
-        "string": "string | number | boolean"
-      }
-    },
-    "sort": "relevance | price_asc | price_desc | newest | rating | null",
-    "limit": "number | null",
-    "cursor": "string | null"
+  "products": [],
+  "pagination": {
+    "has_next_page": false,
+    "cursor": null,
+    "total_count": 0
   },
-  "results": {
-    "total_estimate": "number | null",
-    "returned_count": "number",
-    "next_cursor": "string | null",
-    "items": [
-      {
-        "product_id": "string",
-        "variant_id": "string | null",
-        "title": "string",
-        "brand": "string | null",
-        "category": "string | null",
-        "description_short": "string | null",
-        "image_url": "string | null",
-        "product_url": "string | null",
-        "price": {
-          "amount_minor": "number",
-          "currency": "string"
-        },
-        "compare_at_price": {
-          "amount_minor": "number",
-          "currency": "string"
-        },
-        "availability": {
-          "status": "in_stock | out_of_stock | preorder | discontinued | unknown",
-          "quantity_available": "number | null"
-        },
-        "rating": {
-          "average": "number | null",
-          "count": "number | null"
-        },
-        "match": {
-          "score": "number | null",
-          "reasons": [
-            "string"
-          ],
-          "matched_fields": [
-            "title | description | category | brand | attributes | tags | unknown"
-          ]
-        },
-        "attributes": {
-          "string": "string | number | boolean | null"
-        }
-      }
-    ]
-  },
-  "warnings": [
+  "messages": []
+}
+```
+
+## Product Shape
+
+Each item in `products` must use this shape:
+
+```json
+{
+  "id": "string",
+  "title": "string",
+  "description": "string | null",
+  "media": [
     {
-      "code": "string",
-      "message": "string"
+      "url": "string",
+      "alt_text": "string | null"
+    }
+  ],
+  "categories": [
+    {
+      "value": "string",
+      "label": "string"
+    }
+  ],
+  "rating": {
+    "average": "number | null",
+    "count": "number | null"
+  },
+  "variants": [
+    {
+      "id": "string",
+      "sku": "string | null",
+      "title": "string | null",
+      "price": {
+        "amount": "integer",
+        "currency": "string"
+      },
+      "availability": {
+        "status": "in_stock | out_of_stock | preorder | discontinued | unknown",
+        "quantity": "integer | null"
+      },
+      "selected_options": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ]
     }
   ]
 }
 ```
 
-## Output Rules
+## Message Shape
 
-- `schema_version` must always be `"merchant.catalog.search.v1"`.
-- `returned_count` must equal the length of `results.items`.
-- `price.amount_minor` must be an integer.
-- `compare_at_price` must be `null` if there is no original/list price.
-- `warnings` must be an empty array if there are no warnings.
-- Do not include checkout URLs in search results.
-- Do not claim discounts unless the catalog source explicitly includes them.
-- Do not include payment instructions in this response.
-
-## Valid Empty Result Example
+Use `messages` for warnings, errors, and informational notes.
 
 ```json
 {
-  "schema_version": "merchant.catalog.search.v1",
-  "merchant": {
-    "merchant_id": "demo_merchant",
-    "display_name": "Demo Merchant"
+  "type": "info | warning | error",
+  "code": "string",
+  "content": "string"
+}
+```
+
+If there are no messages, return:
+
+```json
+"messages": []
+```
+
+## Empty Result Example
+
+```json
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capability": "dev.ucp.shopping.catalog.search"
   },
-  "query": {
-    "raw": "red leather moon boots",
-    "normalized": "red leather moon boots",
-    "filters_applied": {
-      "category": null,
-      "min_price": null,
-      "max_price": null,
-      "currency": "USD",
-      "availability": "any",
-      "brand": null,
-      "attributes": {}
-    },
-    "sort": "relevance",
-    "limit": 10,
-    "cursor": null
+  "products": [],
+  "pagination": {
+    "has_next_page": false,
+    "cursor": null,
+    "total_count": 0
   },
-  "results": {
-    "total_estimate": 0,
-    "returned_count": 0,
-    "next_cursor": null,
-    "items": []
+  "messages": [
+    {
+      "type": "info",
+      "code": "no_results",
+      "content": "No matching products were found."
+    }
+  ]
+}
+```
+
+## Example Successful Result
+
+```json
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capability": "dev.ucp.shopping.catalog.search"
   },
-  "warnings": []
+  "products": [
+    {
+      "id": "prod_headphones_001",
+      "title": "Nimbus Wireless Headphones",
+      "description": "Lightweight wireless over-ear headphones with active noise cancellation and long battery life.",
+      "media": [
+        {
+          "url": "http://localhost:42617/images/headphones_001.jpg",
+          "alt_text": "Black wireless over-ear headphones"
+        }
+      ],
+      "categories": [
+        {
+          "value": "electronics/audio/headphones",
+          "label": "Headphones"
+        }
+      ],
+      "rating": {
+        "average": 4.5,
+        "count": 128
+      },
+      "variants": [
+        {
+          "id": "var_headphones_001_black",
+          "sku": "NIM-HDP-001-BLK",
+          "title": "Black",
+          "price": {
+            "amount": 8999,
+            "currency": "USD"
+          },
+          "availability": {
+            "status": "in_stock",
+            "quantity": 42
+          },
+          "selected_options": [
+            {
+              "name": "Color",
+              "value": "Black"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "pagination": {
+    "has_next_page": false,
+    "cursor": null,
+    "total_count": 1
+  },
+  "messages": []
 }
 ```

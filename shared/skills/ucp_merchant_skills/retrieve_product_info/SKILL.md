@@ -1,164 +1,200 @@
 ---
 id: retrieve_product_info
 name: Retrieve Product Info
-description: Return authoritative product, variant, price, inventory, policy, and fulfillment details in a strict JSON schema.
+description: Retrieve full UCP-shaped product detail for a product or variant identifier.
 tags:
+  - ucp_merchant_skills
   - commerce
   - catalog
   - product-details
   - ucp-compatible
 inputModes:
-  - application/json
+  - text
 outputModes:
-  - application/json
+  - text
 ---
 
-# Get Product Details
+# Retrieve Product Info
 
 ## Purpose
 
-Use this skill when a buyer agent, auditor agent, or shopping client needs authoritative details for a specific merchant product or variant.
+Use this skill when the caller already has a product ID or variant ID and wants full product detail.
 
-This skill is usually called after `search_catalog`.
+This skill maps to the UCP Catalog Lookup capability:
 
-This skill must return structured JSON only. Do not return prose, Markdown, explanations, or extra keys outside the schema.
+`dev.ucp.shopping.catalog.lookup`
+
+For a single product detail request, behave like a UCP `get_product` operation.
+
+Return only valid JSON. Do not return Markdown, prose, code fences, explanations, or extra text.
 
 ## Input
 
-The caller should provide JSON matching this shape:
+The caller may provide a product or variant ID in text:
+
+```text
+Get product prod_headphones_001
+```
+
+or:
+
+```text
+Get variant var_headphones_001_black
+```
+
+The caller may also provide JSON-like lookup details in text:
 
 ```json
 {
-  "product_id": "string",
-  "variant_id": "string | null",
-  "include": {
-    "variants": "boolean | null",
-    "policies": "boolean | null",
-    "fulfillment": "boolean | null",
-    "reviews_summary": "boolean | null",
-    "trust_evidence": "boolean | null"
-  }
+  "id": "prod_headphones_001",
+  "selected": [
+    {
+      "name": "Color",
+      "value": "Black"
+    }
+  ],
+  "preferences": [
+    "Color"
+  ]
 }
 ```
 
-If `variant_id` is missing or null, return the product-level details and identify the default variant if one exists.
-
 ## Required Behavior
 
-1. Look up only the merchant's real catalog or provided demo catalog.
-2. Do not invent missing products.
-3. If the product is not found, return a valid `not_found` response.
-4. Do not invent prices, stock, shipping, certifications, reviews, return rules, warranty terms, or provenance.
-5. Return prices as integer minor units, for example cents for USD.
-6. If a field is unknown, use `null`.
-7. Always return valid JSON matching the output schema exactly.
-8. Make this response suitable for downstream cart and checkout validation.
-9. If product detail data conflicts with prior search results, treat this product detail response as authoritative.
+1. Retrieve only from the local merchant catalog or approved merchant data source.
+2. The input `id` may be a product ID or variant ID.
+3. Do not invent missing products.
+4. If the product or variant is not found, return a UCP-shaped error response.
+5. Do not invent prices, inventory, variants, ratings, policies, shipping claims, certifications, or discounts.
+6. Return product and variant IDs exactly as stored in the catalog.
+7. Prices must use minor currency units, for example cents for USD.
+8. If a variant is selected, include it as `featured_variant`.
+9. Return only JSON in the response shape below.
 
-## Output Schema
+## UCP-Shaped Output
 
-Return exactly this JSON shape:
+Return exactly this top-level shape when found:
 
 ```json
 {
-  "schema_version": "merchant.catalog.product_details.v1",
-  "merchant": {
-    "merchant_id": "string",
-    "display_name": "string"
+  "ucp": {
+    "version": "2026-04-08",
+    "capability": "dev.ucp.shopping.catalog.lookup",
+    "operation": "get_product"
   },
-  "lookup": {
-    "product_id": "string",
-    "variant_id": "string | null",
-    "found": "boolean",
-    "status": "found | not_found | discontinued | unavailable"
-  },
-  "product": {
-    "product_id": "string",
-    "title": "string",
-    "brand": "string | null",
-    "category": "string | null",
-    "description": "string | null",
-    "product_url": "string | null",
-    "images": [
-      {
-        "url": "string",
-        "alt_text": "string | null",
-        "position": "number | null"
-      }
-    ],
-    "attributes": {
-      "string": "string | number | boolean | null"
-    },
-    "tags": [
-      "string"
-    ]
-  },
-  "selected_variant": {
-    "variant_id": "string",
+  "product": {},
+  "messages": []
+}
+```
+
+## Product Shape
+
+The `product` object must use this shape:
+
+```json
+{
+  "id": "string",
+  "title": "string",
+  "description": "string | null",
+  "media": [
+    {
+      "url": "string",
+      "alt_text": "string | null"
+    }
+  ],
+  "categories": [
+    {
+      "value": "string",
+      "label": "string"
+    }
+  ],
+  "selected": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "options": [
+    {
+      "name": "string",
+      "values": [
+        {
+          "value": "string",
+          "available": "boolean",
+          "exists": "boolean"
+        }
+      ]
+    }
+  ],
+  "featured_variant": {
+    "id": "string",
     "sku": "string | null",
     "title": "string | null",
-    "attributes": {
-      "string": "string | number | boolean | null"
-    },
     "price": {
-      "amount_minor": "number",
-      "currency": "string"
-    },
-    "compare_at_price": {
-      "amount_minor": "number",
+      "amount": "integer",
       "currency": "string"
     },
     "availability": {
       "status": "in_stock | out_of_stock | preorder | discontinued | unknown",
-      "quantity_available": "number | null",
-      "available_for_checkout": "boolean"
+      "quantity": "integer | null"
     },
-    "limits": {
-      "min_quantity": "number | null",
-      "max_quantity": "number | null"
-    },
-    "dimensions": {
-      "weight_grams": "number | null",
-      "length_mm": "number | null",
-      "width_mm": "number | null",
-      "height_mm": "number | null"
-    }
+    "selected_options": [
+      {
+        "name": "string",
+        "value": "string"
+      }
+    ]
   },
   "variants": [
     {
-      "variant_id": "string",
+      "id": "string",
       "sku": "string | null",
       "title": "string | null",
-      "attributes": {
-        "string": "string | number | boolean | null"
-      },
       "price": {
-        "amount_minor": "number",
+        "amount": "integer",
         "currency": "string"
       },
       "availability": {
         "status": "in_stock | out_of_stock | preorder | discontinued | unknown",
-        "quantity_available": "number | null",
-        "available_for_checkout": "boolean"
-      }
+        "quantity": "integer | null"
+      },
+      "selected_options": [
+        {
+          "name": "string",
+          "value": "string"
+        }
+      ]
     }
   ],
+  "rating": {
+    "average": "number | null",
+    "count": "number | null"
+  }
+}
+```
+
+## Optional Merchant Detail Fields
+
+If known and useful, the product may also include these optional fields:
+
+```json
+{
   "policies": {
     "return_policy": {
       "returnable": "boolean | null",
-      "window_days": "number | null",
+      "window_days": "integer | null",
       "summary": "string | null",
       "policy_url": "string | null"
     },
     "warranty": {
       "included": "boolean | null",
-      "duration_days": "number | null",
+      "duration_days": "integer | null",
       "summary": "string | null",
       "policy_url": "string | null"
     },
     "age_restriction": {
       "required": "boolean",
-      "minimum_age": "number | null"
+      "minimum_age": "integer | null"
     }
   },
   "fulfillment": {
@@ -168,15 +204,10 @@ Return exactly this JSON shape:
     "shipping_required": "boolean | null",
     "pickup_available": "boolean | null",
     "estimated_handling_days": {
-      "min": "number | null",
-      "max": "number | null"
+      "min": "integer | null",
+      "max": "integer | null"
     },
     "shipping_notes": "string | null"
-  },
-  "reviews_summary": {
-    "average_rating": "number | null",
-    "review_count": "number | null",
-    "summary": "string | null"
   },
   "trust_evidence": {
     "merchant_assertions": [
@@ -187,59 +218,180 @@ Return exactly this JSON shape:
         "verified_by": "string | null"
       }
     ]
-  },
-  "warnings": [
-    {
-      "code": "string",
-      "message": "string"
-    }
-  ]
+  }
 }
 ```
 
-## Not Found Output Schema
+Do not include these optional fields if the data is unknown.
 
-If the product is not found, return this exact shape:
+## Message Shape
+
+Use `messages` for warnings, errors, and informational notes.
 
 ```json
 {
-  "schema_version": "merchant.catalog.product_details.v1",
-  "merchant": {
-    "merchant_id": "string",
-    "display_name": "string"
+  "type": "info | warning | error",
+  "code": "string",
+  "content": "string"
+}
+```
+
+If there are no messages, return:
+
+```json
+"messages": []
+```
+
+## Not Found Response
+
+If no matching product or variant is found, return exactly this shape:
+
+```json
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capability": "dev.ucp.shopping.catalog.lookup",
+    "operation": "get_product",
+    "status": "error"
   },
-  "lookup": {
-    "product_id": "string",
-    "variant_id": "string | null",
-    "found": false,
-    "status": "not_found"
-  },
-  "product": null,
-  "selected_variant": null,
-  "variants": [],
-  "policies": null,
-  "fulfillment": null,
-  "reviews_summary": null,
-  "trust_evidence": null,
-  "warnings": [
+  "messages": [
     {
-      "code": "PRODUCT_NOT_FOUND",
-      "message": "No product was found for the supplied product_id."
+      "type": "error",
+      "code": "not_found",
+      "content": "The requested product or variant identifier was not found."
     }
   ]
 }
 ```
 
-## Output Rules
+## Example Successful Result
 
-- `schema_version` must always be `"merchant.catalog.product_details.v1"`.
-- `lookup.product_id` must echo the requested `product_id`.
-- `lookup.variant_id` must echo the requested `variant_id`, or `null` if none was provided.
-- `product.product_id` must match `lookup.product_id` when `found` is true.
-- `selected_variant.variant_id` must be the requested variant, the default variant, or the only available variant.
-- `compare_at_price` must be `null` if there is no original/list price.
-- `variants` may be an empty array if variants were not requested or do not exist.
-- `policies`, `fulfillment`, `reviews_summary`, and `trust_evidence` may be `null` if not requested or unknown.
-- `warnings` must be an empty array if there are no warnings.
-- Do not include checkout session IDs in this response.
-- Do not include payment instructions in this response.
+```json
+{
+  "ucp": {
+    "version": "2026-04-08",
+    "capability": "dev.ucp.shopping.catalog.lookup",
+    "operation": "get_product"
+  },
+  "product": {
+    "id": "prod_headphones_001",
+    "title": "Nimbus Wireless Headphones",
+    "description": "Lightweight wireless over-ear headphones with active noise cancellation and long battery life.",
+    "media": [
+      {
+        "url": "http://localhost:42617/images/headphones_001.jpg",
+        "alt_text": "Black wireless over-ear headphones"
+      }
+    ],
+    "categories": [
+      {
+        "value": "electronics/audio/headphones",
+        "label": "Headphones"
+      }
+    ],
+    "selected": [
+      {
+        "name": "Color",
+        "value": "Black"
+      }
+    ],
+    "options": [
+      {
+        "name": "Color",
+        "values": [
+          {
+            "value": "Black",
+            "available": true,
+            "exists": true
+          }
+        ]
+      }
+    ],
+    "featured_variant": {
+      "id": "var_headphones_001_black",
+      "sku": "NIM-HDP-001-BLK",
+      "title": "Black",
+      "price": {
+        "amount": 8999,
+        "currency": "USD"
+      },
+      "availability": {
+        "status": "in_stock",
+        "quantity": 42
+      },
+      "selected_options": [
+        {
+          "name": "Color",
+          "value": "Black"
+        }
+      ]
+    },
+    "variants": [
+      {
+        "id": "var_headphones_001_black",
+        "sku": "NIM-HDP-001-BLK",
+        "title": "Black",
+        "price": {
+          "amount": 8999,
+          "currency": "USD"
+        },
+        "availability": {
+          "status": "in_stock",
+          "quantity": 42
+        },
+        "selected_options": [
+          {
+            "name": "Color",
+            "value": "Black"
+          }
+        ]
+      }
+    ],
+    "rating": {
+      "average": 4.5,
+      "count": 128
+    },
+    "policies": {
+      "return_policy": {
+        "returnable": true,
+        "window_days": 30,
+        "summary": "Returns accepted within 30 days if the item is unused and in original packaging.",
+        "policy_url": "http://localhost:42617/policies/returns"
+      },
+      "warranty": {
+        "included": true,
+        "duration_days": 365,
+        "summary": "One-year limited manufacturer warranty.",
+        "policy_url": "http://localhost:42617/policies/warranty"
+      },
+      "age_restriction": {
+        "required": false,
+        "minimum_age": null
+      }
+    },
+    "fulfillment": {
+      "ships_to": [
+        "US"
+      ],
+      "shipping_required": true,
+      "pickup_available": false,
+      "estimated_handling_days": {
+        "min": 1,
+        "max": 2
+      },
+      "shipping_notes": "Standard and expedited shipping available at checkout."
+    },
+    "trust_evidence": {
+      "merchant_assertions": [
+        {
+          "type": "authenticity",
+          "claim": "Sold directly by Demo Merchant as a new retail product.",
+          "evidence_url": null,
+          "verified_by": null
+        }
+      ]
+    }
+  },
+  "messages": []
+}
+```
