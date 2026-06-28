@@ -1,18 +1,46 @@
-Setting up merchant agents in Zeroclaw
+# **Setting Up Merchant Agents in ZeroClaw**
 
-Take the contents of this repo and paste them into your '.zeroclaw' folder.
+This guide explains how to set up a dummy UCP-style merchant agent in ZeroClaw, expose it through A2A, and test the agent card and skill execution from the terminal.
 
-Check that you have the following folders (free to create folders):
+---
 
+## **1. Copy the Repo Contents**
+
+Take the contents of this repo and paste them into your `.zeroclaw` folder.
+
+Check that you have the following folders. Create them if they do not already exist:
+
+```text
 /shared/skills/ucp_merchant_skills
 /agents/my_merchant_agent
+```
 
-Under 'agents/my_merchant_agent' you should see skills to populate. Right now those skills are 'search catalog' and 'retrieve_product_info'.
+Under:
 
-After populating these skills we need to update config.toml file which is under '.zeroclaw'.
+```text
+/agents/my_merchant_agent
+```
 
-We need to add the following keys (watch out for duplicate keys when manually editing config, or Zeroclaw will fail to parse the file):
+you should see skills to populate.
 
+Right now, those skills are:
+
+```text
+search_catalog
+retrieve_product_info
+```
+
+---
+
+## **2. Update `config.toml`**
+
+After populating the skills, update your `config.toml` file inside the `.zeroclaw` folder.
+
+Add the following keys.
+
+Be careful not to create duplicate keys when manually editing the config file, or ZeroClaw may fail to parse it.
+
+```toml
 [skill_bundles.ucp_merchant_skills]
 
 [a2a.server]
@@ -21,23 +49,43 @@ enabled = true
 [agents]
 
 [agents.my_merchant_agent]
-... whatever settings you like for your agent
-skill_bundles = ['ucp_merchant_skills']
+# Add whatever settings you like for your agent here.
+skill_bundles = ["ucp_merchant_skills"]
 
 [agents.my_merchant_agent.a2a]
 published = true
-exposed_skills = ['search_catalog', 'retrieve_product_info']
+exposed_skills = ["search_catalog", "retrieve_product_info"]
+```
 
-Getting info from an agent:
-First run 'zeroclaw gateway'.
-Then, from your terminal you should be able to run:
+---
+
+## **3. Getting Info From an Agent**
+
+First, run the ZeroClaw gateway:
+
+```powershell
+zeroclaw gateway
+```
+
+Then, from your terminal, you should be able to run:
+
+```powershell
 curl http://localhost:42617/.well-known/agents-card.json
+```
+
+You can also fetch the A2A Agent Card for the merchant agent:
+
+```powershell
 curl http://localhost:42617/a2a/my_merchant_agent/.well-known/agent-card.json
+```
 
+---
 
-Running a skill from an agent:
-I haven't figured this out yet but this is my in-progress Microsoft Powershell command
-"""
+## **4. Running a Skill From an Agent**
+
+I have not fully finalized this flow yet, but this is the current in-progress Microsoft PowerShell command for calling the `search_catalog` skill through A2A.
+
+```powershell
 function Get-ZeroClawA2AText($response) {
   $response.result.artifacts |
     ForEach-Object { $_.parts } |
@@ -100,4 +148,19 @@ do {
 } while ($state -eq "working" -or $state -eq "submitted")
 
 Get-ZeroClawA2AText $taskResponse
-"""
+```
+
+---
+
+## **5. Notes**
+
+The merchant agent currently exposes two skills:
+
+```text
+search_catalog
+retrieve_product_info
+```
+
+These skills are intended to return UCP-shaped catalog responses, but the agent is still exposed through A2A rather than through a full native UCP implementation.
+
+For full UCP compliance, a separate UCP discovery/profile endpoint would likely still be needed.
