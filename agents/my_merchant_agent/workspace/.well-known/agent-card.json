@@ -1,0 +1,78 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "Dummy UCP Merchant Agent",
+  "description": "An A2A-compatible dummy UCP merchant agent with deterministic local catalog search. The listed UCP merchant skills are executable through JSON-RPC message/send and mapped to local UCP-style merchant actions.",
+  "url": "http://localhost:42617/a2a/my_merchant_agent",
+  "version": "0.1.0",
+  "provider": {
+    "organization": "ZeroClaw Merchant Sandbox",
+    "url": "http://localhost:42617/a2a/my_merchant_agent"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "preferredTransport": "JSONRPC",
+  "additionalInterfaces": [
+    {
+      "url": "http://localhost:42617/a2a/my_merchant_agent",
+      "transport": "JSONRPC"
+    }
+  ],
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "search_catalog",
+      "name": "Search Catalog",
+      "description": "Search the merchant catalog and return matching products in a strict JSON schema.",
+      "tags": [
+        "commerce",
+        "catalog",
+        "product-search",
+        "ucp-compatible"
+      ],
+      "examples": [
+        "Find running shoes under $100",
+        "Search for black cotton t-shirts in size medium",
+        "Show available wireless headphones with noise cancellation"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    },
+    {
+      "id": "get_product_details",
+      "name": "Get Product Details",
+      "description": "Return authoritative product, variant, price, inventory, policy, and fulfillment details in a strict JSON schema.",
+      "tags": [
+        "commerce",
+        "catalog",
+        "product-details",
+        "ucp-compatible"
+      ],
+      "examples": [
+        "Get details for product prod_123",
+        "Get variant details for product prod_123 and variant var_blue_m",
+        "Return policy, fulfillment, and trust evidence for product prod_123"
+      ],
+      "inputModes": [
+        "application/json"
+      ],
+      "outputModes": [
+        "application/json"
+      ]
+    }
+  ],
+  "supportsAuthenticatedExtendedCard": false
+}
