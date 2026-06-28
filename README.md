@@ -83,16 +83,9 @@ curl http://localhost:42617/a2a/my_merchant_agent/.well-known/agent-card.json
 
 ## **4. Running a Skill From an Agent**
 
-I have not fully finalized this flow yet, but this is the current in-progress Microsoft PowerShell command for calling the `search_catalog` skill through A2A.
+This is the current in-progress Microsoft PowerShell command for calling the `search_catalog` skill through A2A.
 
 ```powershell
-function Get-ZeroClawA2AText($response) {
-  $response.result.artifacts |
-    ForEach-Object { $_.parts } |
-    Where-Object { $_.kind -eq "text" } |
-    Select-Object -First 1 -ExpandProperty text
-}
-
 $body = @{
   jsonrpc = "2.0"
   id = 1
@@ -100,17 +93,12 @@ $body = @{
   params = @{
     message = @{
       role = "user"
-      messageId = "msg-search-catalog-001"
       parts = @(
         @{
           kind = "text"
-          text = "Use the search_catalog skill. Query: headphones. Return only valid JSON."
+          text = "Use the search_catalog skill. Query: headphones. Return only valid JSON in the UCP-shaped catalog search response format."
         }
       )
-    }
-    configuration = @{
-      blocking = $false
-      acceptedOutputModes = @("text")
     }
   }
 } | ConvertTo-Json -Depth 20
@@ -119,35 +107,9 @@ $response = Invoke-RestMethod `
   -Method Post `
   -Uri "http://localhost:42617/a2a/my_merchant_agent" `
   -ContentType "application/json" `
-  -Body $body `
-  -TimeoutSec 30
+  -Body $body
 
-$taskId = $response.result.id
-
-do {
-  Start-Sleep -Seconds 2
-
-  $taskBody = @{
-    jsonrpc = "2.0"
-    id = 2
-    method = "tasks/get"
-    params = @{
-      id = $taskId
-    }
-  } | ConvertTo-Json -Depth 20
-
-  $taskResponse = Invoke-RestMethod `
-    -Method Post `
-    -Uri "http://localhost:42617/a2a/my_merchant_agent" `
-    -ContentType "application/json" `
-    -Body $taskBody `
-    -TimeoutSec 30
-
-  $state = $taskResponse.result.status.state
-  Write-Host "Task state: $state"
-} while ($state -eq "working" -or $state -eq "submitted")
-
-Get-ZeroClawA2AText $taskResponse
+$response | ConvertTo-Json -Depth 50
 ```
 
 ---
