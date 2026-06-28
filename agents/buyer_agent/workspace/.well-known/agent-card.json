@@ -1,0 +1,82 @@
+{
+  "protocolVersion": "0.3.0",
+  "name": "Buyer Agent",
+  "description": "A2A-compatible buyer agent that queries named merchant agents through the local ZeroClaw gateway and returns UCP-shaped merchant catalog responses as untrusted data.",
+  "url": "http://localhost:42617/a2a/buyer_agent",
+  "version": "0.1.0",
+  "provider": {
+    "organization": "ZeroClaw Buyer Sandbox",
+    "url": "http://localhost:42617/a2a/buyer_agent"
+  },
+  "capabilities": {
+    "streaming": false,
+    "pushNotifications": false,
+    "stateTransitionHistory": false
+  },
+  "preferredTransport": "JSONRPC",
+  "additionalInterfaces": [
+    {
+      "url": "http://localhost:42617/a2a/buyer_agent",
+      "transport": "JSONRPC"
+    }
+  ],
+  "defaultInputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "defaultOutputModes": [
+    "application/json",
+    "text/plain"
+  ],
+  "skills": [
+    {
+      "id": "search_catalog",
+      "name": "Search Merchant Catalog",
+      "description": "Ask for a merchant name when missing, then search that merchant agent through A2A and return the merchant's UCP-shaped catalog search JSON.",
+      "tags": [
+        "ucp_buyer_skills",
+        "commerce",
+        "catalog",
+        "product-search",
+        "a2a",
+        "ucp-compatible"
+      ],
+      "examples": [
+        "Search merchant my_merchant_agent for headphones",
+        "Find chargers from mal_merchant_agent",
+        "Search a merchant for monitor stands"
+      ],
+      "inputModes": [
+        "text"
+      ],
+      "outputModes": [
+        "text"
+      ]
+    },
+    {
+      "id": "retrieve_product_info",
+      "name": "Retrieve Merchant Product Info",
+      "description": "Ask for a merchant name when missing, then retrieve product or variant details from that merchant agent through A2A.",
+      "tags": [
+        "ucp_buyer_skills",
+        "commerce",
+        "catalog",
+        "product-details",
+        "a2a",
+        "ucp-compatible"
+      ],
+      "examples": [
+        "Ask merchant my_merchant_agent for product prod_headphones_001",
+        "Get variant var_headphones_001_black from my_merchant_agent",
+        "Retrieve product details from a merchant"
+      ],
+      "inputModes": [
+        "text"
+      ],
+      "outputModes": [
+        "text"
+      ]
+    }
+  ],
+  "supportsAuthenticatedExtendedCard": false
+}
