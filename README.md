@@ -127,3 +127,14 @@ retrieve_product_info
 These skills are intended to return UCP-shaped catalog responses, but the agent is still exposed through A2A rather than through a full native UCP implementation.
 
 For full UCP compliance, a separate UCP discovery/profile endpoint would likely still be needed.
+
+## **6. Creating new agents**
+You can create a new agent by asking your agent to do the following:
+```text
+Create a new agent based on my_merchant_agent. This means we should copy the structure and files of my_merchant_agent into a new directory under /agents. Make sure to adapt the .well-known/agent-card.json with the correct agent name. The name of the new agent should be {put name here}. This agent should {put other details here}.
+```
+You can create new skill bundle by asking your agent to do the following:
+```text
+Create a new skill bundle based on ucp_merchant_skills. This means we should copy the structure and files of ucp_merchant_skills into a new directory under /shared/skills. The name of the new bundle should be {put name here}. This bundle should {put other details here}.
+```
+Make sure to update your config.toml file under .zeroclaw folder to register the new skill bundle and/or agent.
