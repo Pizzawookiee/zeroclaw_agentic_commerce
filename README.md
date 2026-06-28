@@ -18,7 +18,7 @@ Check that you have the following folders. Create them if they do not already ex
 Under:
 
 ```text
-/agents/my_merchant_agent
+/shared/skills/ucp_merchant_skills
 ```
 
 you should see skills to populate.
@@ -29,6 +29,7 @@ Right now, those skills are:
 search_catalog
 retrieve_product_info
 ```
+You can also change the catalog by editing 'catalog.json' in the /agents/my_merchant_agent/workspace.
 
 ---
 
